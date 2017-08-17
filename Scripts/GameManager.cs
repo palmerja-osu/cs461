@@ -1,16 +1,43 @@
-﻿using System.Collections;
+﻿using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    //next wave inc text
+    //public Text waveLabel;
 
-    private bool gameEnded = false;
 
+    public static bool GameIsOver; 
+
+
+    public GameObject gameOverUI;
+
+    public GameObject completeLevelUI;
+
+
+
+
+    void Start()
+    {
+        //to prevent overlay gameover by resetting default to false
+        GameIsOver = false;
+
+     
+
+}
     void Update()
     {
-        if (gameEnded)
+        if (GameIsOver)
             return;
-
+/*
+        //quick shortcut to end game by pressing e
+        //for testing
+        if (Input.GetKeyDown("e"))
+        {
+            EndGame();
+        }
+*/
 
         if (PlayerStats.Lives <= 0)
         {
@@ -21,7 +48,16 @@ public class GameManager : MonoBehaviour
 
     void EndGame()
     {
-        gameEnded = true;
+        GameIsOver = true;
         //game over call here
+
+        //gameover screen active
+        gameOverUI.SetActive(true);
+    }
+
+    public void WinLevel()
+    {
+        GameIsOver = true;
+        completeLevelUI.SetActive(true);
     }
 }

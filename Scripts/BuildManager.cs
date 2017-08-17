@@ -18,13 +18,13 @@ public class BuildManager : MonoBehaviour {
 
 
 
-    public GameObject standardTurretPreFab;
-    public GameObject missileLauncherPrefab;
-
     public GameObject buildEffect;  //when turret is built, this happens
+    public GameObject sellEffect; //turret is sold, this animation happens
 
+    private TurretBlueprint turretToBuild; //pass reference to node
+    private Node selectedNode; //nodeUI
 
-    private TurretBlueprint turretToBuild;
+    public NodeUI nodeUI;
 
 
     //property that only allows a get     
@@ -32,30 +32,37 @@ public class BuildManager : MonoBehaviour {
     public bool CanBuild { get { return turretToBuild != null; } }
     public bool HasMoney { get { return PlayerStats.Money >= turretToBuild.cost; } }
 
-    public void BuildTurretOn (Node node)
+   
+
+    public void SelectNode (Node node)
     {
-        //check if player has enough money
-        if(PlayerStats.Money < turretToBuild.cost)
+        if(selectedNode == node)
         {
-            Debug.Log("Lacking enough money to build");
+            DeselectNode();
             return;
         }
 
-        PlayerStats.Money -= turretToBuild.cost;
+        selectedNode = node;
+        turretToBuild = null; //enable one to disable the other
 
-        GameObject turret = (GameObject) Instantiate(turretToBuild.prefab, node.GetBuildPosition(), Quaternion.identity);
-        node.turret = turret;  //node.turret = turret that was just built
-
-        GameObject effect =Instantiate(buildEffect, node.GetBuildPosition(), Quaternion.identity); //when turret is built, this happens
-        Destroy(effect, 5f);
-
-        //display money left
-        Debug.Log("Turret built! Money Left: " + PlayerStats.Money);
+        nodeUI.SetTarget(node);
     }
 
-
-    public void SelectTurretToBuild (TurretBlueprint turret)
+    public void DeselectNode()
     {
-        turretToBuild = turret;  //sets the turrets to build here
+        selectedNode = null;
+        nodeUI.Hide();
     }
+
+    public void SelectTurretToBuild(TurretBlueprint turret)
+    {
+        turretToBuild = turret; //sets turret to build on selected area
+        DeselectNode();
+    }
+
+    public TurretBlueprint GetTurretToBuild()
+    {
+        return turretToBuild;
+    }
+   
 }

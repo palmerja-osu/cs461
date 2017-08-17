@@ -2,6 +2,7 @@
 public class Bullet : MonoBehaviour {
 
     private Transform target;
+    private Enemy targetEnemy;
 
     public float speed = 70f;
 
@@ -10,14 +11,15 @@ public class Bullet : MonoBehaviour {
 
 
     //bullet explosion effect
-    public GameObject impactEffect;
     public float explosionRadius = 0f;
+    public GameObject impactEffect;
+    
 
-    public void Seek(Transform _target)
+    public void Seek(Transform _target, Enemy _targetEnemy)
     {
         target = _target;
+        targetEnemy = _targetEnemy;
     }
-
 
     void Update () {
 		if (target == null)
@@ -78,7 +80,8 @@ public class Bullet : MonoBehaviour {
 
     void Damage (Transform enemy)
     {
-        Enemy e = GetComponent<Enemy>();
+        //difer between the Enemy option and the new variable of e
+        Enemy e = targetEnemy.GetComponent<Enemy>();  //get component of type enemy
 
         if (e != null)
         {

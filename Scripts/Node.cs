@@ -10,9 +10,12 @@ public class Node : MonoBehaviour {
     public Color notEnoughMoneyColor; //visual to show player doesn't have enough funds
     public Vector3 positionOffSet;
 
-    [Header("Optional")]  //this is optional for the user to add a pre-built in turret to assist gamer with a handicap during a level
-
+    [HideInInspector]  //access from anywhere, just don't want people to change this inside the inspector
     public GameObject turret;
+    [HideInInspector]
+    public TurretBlueprint turretBlueprint;
+    [HideInInspector]
+    public bool isUpgraded = false;  
 
     private Renderer rend;
     private Color startColor; //color 
@@ -22,10 +25,13 @@ public class Node : MonoBehaviour {
 
     void Start()
     {
+
+        buildManager = BuildManager.instance;
+
         rend = GetComponent<Renderer>();
         startColor = rend.material.color;
 
-        buildManager = BuildManager.instance;
+
     }
 
     //create a little helper function
@@ -39,22 +45,89 @@ public class Node : MonoBehaviour {
         if (EventSystem.current.IsPointerOverGameObject())
             return;
 
+        if (turret != null)
+        {
+            buildManager.SelectNode(this);
+            return;
+        }
 
         if (!buildManager.CanBuild)
             return;
 
+        BuildTurret(buildManager.GetTurretToBuild());
+    } //pass to build turret
 
 
-        if (turret != null)
+
+    void BuildTurret (TurretBlueprint blueprint)
+    {
+        //check if player has enough money
+        if (PlayerStats.Money < blueprint.cost)
         {
-            Debug.Log("something already exists, cannot build here");
+            Debug.Log("Lacking enough money to build");
             return;
         }
 
-        buildManager.BuildTurretOn(this);    
+        PlayerStats.Money -= blueprint.cost;
+
+        GameObject _turret = (GameObject)Instantiate(blueprint.prefab, GetBuildPosition(), Quaternion.identity);
+        turret = _turret;  //node.turret = turret that was just built
+
+        turretBlueprint = blueprint; 
+
+        GameObject effect = Instantiate(buildManager.buildEffect, GetBuildPosition(), Quaternion.identity); //when turret is built, this happens
+        Destroy(effect, 5f);
+
+   
+        //display money left
+        Debug.Log("Turret built!");
+    }
+
+    //upgrade turret
+    public void UpgradeTurret()
+    {
+        //check if player has enough money
+        if (PlayerStats.Money < turretBlueprint.upgradeCost)
+        {
+            Debug.Log("Lacking enough money to upgrade that");
+            return;
+        }
+
+        PlayerStats.Money -= turretBlueprint.upgradeCost;
+
+        //get rid of the old turret
+        Destroy(turret);
+
+        //build new upgraded turret
+        GameObject _turret = (GameObject)Instantiate(turretBlueprint.upgradedPrefab, GetBuildPosition(), Quaternion.identity);
+        turret = _turret;  //node.turret = turret that was just built
+
+     
+
+        GameObject effect = Instantiate(buildManager.buildEffect, GetBuildPosition(), Quaternion.identity); //when turret is built, this effect happens
+        Destroy(effect, 5f);
+
+
+        isUpgraded = true; //when upgrade is complete switch to true
+
+        //display money left
+        Debug.Log("Turret upgraded!");
 
     }
 
+    public void SellTurret()
+    {
+        PlayerStats.Money += turretBlueprint.GetSellAmount();
+
+        //cool code animation
+        GameObject effect = Instantiate(buildManager.sellEffect, GetBuildPosition(), Quaternion.identity); //when turret is sold, this effect happens
+        Destroy(effect, 5f);
+
+        Destroy(turret);
+        turretBlueprint = null;
+
+
+    }
     //called when mouse enters collider
     //unity callback
     void OnMouseEnter()
