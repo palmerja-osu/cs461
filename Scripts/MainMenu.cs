@@ -5,7 +5,7 @@ public class MainMenu : MonoBehaviour {
 
     //loading the main level
     public string levelToLoad = "MainLevel";
-
+    public string tutorialLoad = "Tutorial";
     public SceneFader sceneFader;
 
     public void Play()
@@ -19,6 +19,11 @@ public class MainMenu : MonoBehaviour {
     {
         Debug.Log("Exiting...");
         Application.Quit();
+    }
+
+    public void Tutorial()
+    {
+        sceneFader.FadeTo(tutorialLoad);
     }
 
 }
