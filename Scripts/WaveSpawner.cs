@@ -17,7 +17,7 @@ public class WaveSpawner : MonoBehaviour
 
 
     //time between enemy release
-    public float timeBetweenWaves = 10f;
+    public float timeBetweenWaves = 5f;
     //time between spawning first wave
     private float countDown = 15f;
 

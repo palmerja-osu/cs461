@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 114523018852258440}
   - component: {fileID: 114320884217746896}
   m_Layer: 0
-  m_Name: Enemy_Fast
+  m_Name: Enemy_Fast_Upgraded
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57,7 +57,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: cb704e2cb5bde1b4aa77cd6f3916f397, type: 2}
+  - {fileID: 2100000, guid: a90b2adcb66ecfe43a23b78f91bec7e8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -105,9 +105,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29643072f501da148bdea5d72f9ea6ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startSpeed: 15
+  startSpeed: 20
   speed: 10
-  health: 75
+  health: 125
   worth: 5
   deathEffect: {fileID: 1675246699671606, guid: 46e1c4739ffbdc94b970b529004710af,
     type: 2}
